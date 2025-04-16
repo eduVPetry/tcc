@@ -1,0 +1,4 @@
+interest = _Phi_
+confidence = _Vp_
+wA = 1.0
+wB = 0.1

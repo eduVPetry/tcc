@@ -1,0 +1,72 @@
+Wyllie:
+_VPmat_ = np.sqrt((_Kmat_ + 4.0 / 3.0 * _Gmat_) / _RHOmat_)
+_VSmat_ = np.sqrt(_Gmat_ / _RHOmat_)
+_VPfl_ = np.sqrt((_Kfl_ + 4.0 / 3.0 * _Gfl_) / _RHOfl_)
+_Vp_ = np.sqrt(_Gfl_ /_RHOfl_)
+
+Raymer:
+_VPmat_ = np.sqrt((_Kmat_ + 4.0 / 3.0 * _Gmat_) / _RHOmat_)
+_VSmat_ = np.sqrt(_Gmat_ / _RHOmat_)
+_VPfl_ = np.sqrt((_Kfl_ + 4.0 / 3.0 * _Gfl_) / _RHOfl_)
+_VSfl_ = np.sqrt(_Gfl_ / _RHOfl_)
+_Vp_ = (1 - _Phi_) ** 2.0 * _VPmat_ + _Phi_ * _VPfl_
+
+SoftSand:
+_Rho_ = (1.0 - _Phi_) * _RHOmat_ + _Phi_ * _RHOfl_
+_Poisson_ = (3.0 * _Kmat_ - 2.0 * _Gmat_) / (6.0 * _Kmat_ + 2.0 * _Gmat_)
+_KHM_ = ((_coordnum_ ** 2.0 * (1.0 - _criticalPhi_) ** 2.0 * _Gmat_ **2.0 * _pressure_) / (18.0 * np.pi ** 2.0 * (1 - _Poisson_) **2)) **(1.0 / 3.0)
+_GHM_ = (5.0 - 4.0 * _Poisson_) / (10.0 - 5.0 * _Poisson_) * ((3.0 * _coordnum_ ** 2.0 * (1.0 - _criticalPhi_) ** 2.0 * _Gmat_ **2.0 * _pressure_) / (2 * np.pi ** 2.0 * (1.0 - _Poisson_) **2.0)) **(1.0 / 3.0)
+_Kdry_ = 1. / ((_Phi_ / _criticalPhi_) / (_KHM_ + 4.0 / 3.0 * _GHM_) + (1.0 - _Phi_ / _criticalPhi_) / (_Kmat_ + 4.0 / 3.0 * _GHM_)) - 4.0 / 3.0 * _GHM_
+_psi_ = (9.0 * _KHM_ + 8.0 * _GHM_) / (_KHM_ + 2.0 * _GHM_)
+_Gdry_ = 1.0 / ((_Phi_ / _criticalPhi_) / (_GHM_ + 1.0 / 6.0 * _psi_ * _GHM_) + (1 - _Phi_ / _criticalPhi_) / (_Gmat_ + 1.0 / 6.0 * _psi_ * _GHM_)) - 1.0 / 6.0 * _psi_ * _GHM_
+_Ksat_ = _Kdry_ + ((1 - _Kdry_ / _Kmat_) ** 2) / (_Phi_ / _Kfl_ + (1 - _Phi_) / _Kmat_ - _Kdry_ / (_Kmat_ ** 2))
+_Gsat_ = _Gdry_
+_Vp_ = np.sqrt((_Ksat_ + 4.0 / 3.0 * _Gsat_) / _Rho_)
+
+StiffSand:
+_Rho_ = (1.0 - _Phi_) * _RHOmat_ + _Phi_ * _RHOfl_
+_Poisson_ = (3 * _Kmat_ - 2 * _Gmat_) / (6 * _Kmat_ + 2 * _Gmat_)
+_KHM_ = ((_coordnum_ ** 2 * (1 - _criticalPhi_) ** 2 * _Gmat_ ** 2 * _pressure_) / (18 * np.pi ** 2 * (1 - _Poisson_) ** 2)) ** (1 / 3)
+_GHM_ = (5 - 4 * _Poisson_) / (10 - 5 * _Poisson_) * ((3 * _coordnum_ ** 2 * (1 - _criticalPhi_) ** 2 * _Gmat_ ** 2 * _pressure_) / (2 * np.pi ** 2 * (1 - _Poisson_) ** 2)) ** (1 / 3)
+_Kdry_ = 1. / ((_Phi_ / _criticalPhi_) / (_KHM_ + 4 / 3 * _Gmat_) + (1 - _Phi_ / _criticalPhi_) / (_Kmat_ + 4 / 3 * _Gmat_)) - 4 / 3 * _Gmat_
+_psi_ = (9 * _Kmat_ + 8 * _Gmat_) / (_Kmat_ + 2 * _Gmat_)
+_Gdry_ = 1. / ((_Phi_ / _criticalPhi_) / (_GHM_ + 1 / 6 * _psi_ * _Gmat_) + (1 - _Phi_ / _criticalPhi_) / (_Gmat_ + 1 / 6 * _psi_ * _Gmat_)) - 1 / 6 * _psi_ * _Gmat_
+_Ksat_ = _Kdry_ + ((1 - _Kdry_ / _Kmat_) ** 2) / (_Phi_ / _Kfl_ + (1 - _Phi_) / _Kmat_ - _Kdry_ / (_Kmat_ ** 2))
+_Gsat_ = _Gdry_
+_Vp_ = np.sqrt((_Ksat_ + 4 / 3 * _Gsat_) / _Rho_)
+
+SphericalInclusion:
+_Rho_ = (1.0 - _Phi_) * _RHOmat_ + _Phi_ * _RHOfl_
+_Kdry_ = 4 * _Kmat_ * _Gmat_ * (1 - _Phi_) / (3 * _Kmat_ * _Phi_ + 4 * _Gmat_)
+_Gdry_ = _Gmat_ * (9 * _Kmat_ + 8 * _Gmat_) * (1 - _Phi_) / ((9 * _Kmat_ + 8 * _Gmat_ + 6 * (_Kmat_ + 2 * _Gmat_) * _Phi_))
+_Ksat_ = _Kdry_ + ((1 - _Kdry_ / _Kmat_) ** 2) / (_Phi_ / _Kfl_ + (1 - _Phi_) / _Kmat_ - _Kdry_ / (_Kmat_ ** 2))
+_Gsat_ = _Gdry_
+_Vp_ = np.sqrt((_Ksat_ + 4 / 3 * _Gsat_) / _Rho_)
+
+BerrymanInclusion:
+_Rho_ = (1.0 - _Phi_) * _RHOmat_ + _Phi_ * _RHOfl_
+_Kinc_ = _Kfl_
+_Ginc_ = 0
+_Poisson_ = (3 * _Kmat_ - 2 * _Gmat_) / (2 * (3 * _Kmat_ + _Gmat_))
+_theta_ = _Ar_ / (1 - _Ar_ ** 2) ** (3/ 2) * (np.arccos(_Ar_) - _Ar_ * np.sqrt(1 - _Ar_ ** 2))
+_g_ = _Ar_ ** 2 / (1 - _Ar_ ** 2) * (3* _theta_ - 2)
+_R_ = (1 - 2* _Poisson_) / (2 - 2* _Poisson_)
+_A_ = (_Ginc_ / _Gmat_) - 1
+_B_ = 1/ 3* (_Kinc_ / _Kmat_ - _Ginc_ / _Gmat_)
+_F1_ = 1 + _A_ * (3/ 2* (_g_ + _theta_) - _R_ * (3/ 2* _g_ + 5/ 2* _theta_ - 4/ 3))
+_F2_ = 1 + _A_ * (1 + 3/ 2* (_g_ + _theta_) - _R_ / 2* (3* _g_ + 5 * _theta_)) + _B_ * (3 - 4* _R_) + _A_ / 2* (_A_ + 3* _B_) * (3 - 4* _R_) * (_g_ + _theta_ - _R_ * (_g_ - _theta_ + 2* _theta_ ** 2))
+_F3_ = 1 + _A_ * (1 - (_g_ + 3 / 2 * _theta_) + _R_ * (_g_ + _theta_))
+_F4_ = 1 + _A_ / 4* (_g_ + 3* _theta_ - _R_ * (_g_ - _theta_))
+_F5_ = _A_ * (_R_ * (_g_ + _theta_ - 4/ 3) - _g_) + _B_ * _theta_ * (3 - 4 * _R_)
+_F6_ = 1 + _A_ * (1 + _g_ - _R_ * (_theta_ + _g_)) + _B_ * (1 - _theta_) * (3 - 4 * _R_)
+_F7_ = 2 + _A_ / 4 * (9* _theta_ + 3* _g_ - _R_ * (5* _theta_ + 3* _g_)) + _B_ * _theta_ * (3 - 4* _R_)
+_F8_ = _A_ * (1 - 2* _R_ + _g_ / 2* (_R_ - 1) + _theta_ / 2* (5* _R_ - 3)) + _B_ * (1 - _theta_) * (3 - 4* _R_)
+_F9_ = _A_ * (_g_ * (_R_ - 1) - _R_ * _theta_) + _B_ * _theta_ * (3 - 4* _R_)
+_Tiijj_ = 3 * _F1_ / _F2_
+_Tijij_ = _Tiijj_ / 3 + 2/ _F3_ + 1/ _F4_ + (_F4_ * _F5_ + _F6_ * _F7_ - _F8_ * _F9_) / (_F2_ * _F4_)
+_P_ = _Tiijj_ / 3
+_Q_ = (_Tijij_ - _P_) / 5
+_Ksat_ = ((_Phi_ * (_Kinc_ - _Kmat_) * _P_) * 4 / 3* _Gmat_ + _Kmat_ * (_Kmat_ + 4 / 3* _Gmat_)) / (_Kmat_ + 4 / 3* _Gmat_ - (_Phi_ * (_Kinc_ - _Kmat_) * _P_))
+_psi_ = (_Gmat_ * (9 * _Kmat_ + 8* _Gmat_)) / (6 * (_Kmat_ + 2 * _Gmat_))
+_Gsat_ = (_psi_ * (_Phi_ * (_Ginc_ - _Gmat_) * _Q_) + _Gmat_ * (_Gmat_ + _psi_)) / (_Gmat_ + _psi_ - (_Phi_ * (_Ginc_ - _Gmat_) * _Q_))
+_Vp_ = np.sqrt((_Ksat_ + 4 / 3 * _Gsat_) / _Rho_)
