@@ -1,1 +1,0 @@
-Experiment ran in 264.826 seconds.
