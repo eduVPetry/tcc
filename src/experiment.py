@@ -198,7 +198,7 @@ class Experiment:
             self._append_to_results_csv()
 
         except Exception as e:
-            logger.error(f"Experiment failed: {e}")
+            self.log(f"Experiment failed: {e}")
             raise
 
 
