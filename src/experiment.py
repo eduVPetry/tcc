@@ -1,6 +1,7 @@
 import os
 import time
 from typing import Optional
+from datetime import datetime
 
 from src.experiment_utils import write_param_pso
 from src.main_dm_las_forms_plots_separados import run_experiment
@@ -25,6 +26,7 @@ class Experiment:
         facies (int): Facies number to select for analysis
         runtime (Optional[float]): Time taken to run the experiment in seconds
         best_error (Optional[float]): Best error achieved by the swarm
+        log_buffer (list): Buffer to store log messages
         id (str): Unique identifier for this experiment
     """
     
@@ -65,6 +67,7 @@ class Experiment:
         self.facies = facies
         self.runtime: Optional[float] = None
         self.best_error: Optional[float] = None
+        self.log_buffer = []
         self.generate_unique_id()
 
     def generate_unique_id(self) -> None:
@@ -94,6 +97,28 @@ class Experiment:
             f"c2=[{self.c2_start},{self.c2_end}]"
         )
 
+    def log(self, message: str) -> None:
+        """Add a message to the log buffer.
+        
+        Args:
+            message: Message to be logged
+        """
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.log_buffer.append(f"[{timestamp}] {message}")
+        
+    def write_logs(self) -> None:
+        """Write the log buffer to a file."""
+        if not self.log_buffer:
+            return
+
+        # Create results directory if it doesn't exist
+        os.makedirs("results", exist_ok=True)
+        
+        # Write logs to file
+        log_file = os.path.join("results", f"{self.id}", "log.txt")
+        with open(log_file, "w") as f:
+            f.write("\n".join(self.log_buffer))
+
     def run(self) -> None:
         """
         Execute the experiment.
@@ -113,12 +138,22 @@ class Experiment:
             self.c2_start,
             self.c2_end
         )
-        
+
+        # Log start of experiment
+        self.log(f"Starting experiment {self.id}")
+        self.log(f"Parameters: {self.__dict__}")
+
         start_time = time.time()
-        self.best_error = run_experiment(self.id, self.well_name, self.facies)
+        self.best_error, self.log_buffer = run_experiment(self.id, self.well_name, self.facies, self.log_buffer)
         end_time = time.time()
         
-        self.runtime = end_time - start_time
+        self.runtime = end_time - start_time        
+
+        # Log end of experiment and runtime
+        self.log(f"Best error: {self.best_error}")
+        self.log(f"Runtime: {self.runtime:.2f} seconds")
+
+        self.write_logs()
 
     def save_results(self) -> None:
         """

@@ -10,7 +10,7 @@ import src.utils as utils
 # Set random seed for reproducibility
 np.random.seed(555)
 
-def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
+def run_experiment(experiment_id: str, well_name: str, facies: int, log_buffer=None) -> tuple:
     """
     Run a rock physics inversion experiment using PSO optimization.
     
@@ -22,9 +22,10 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
         experiment_id: Identifier for the experiment, used for output file organization
         well_name: Name of the well (LAS file) to use, without extension
         facies: Facies number to select for analysis
+        log_buffer: Optional list to store log messages
         
     Returns:
-        float: The best error achieved by the swarm across all models
+        tuple: (best_error, log_buffer) - The best error achieved by the swarm and the updated log buffer
     """
     # Model configuration
     model_labels = {
@@ -140,10 +141,16 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
 
 
     horizon = (aDept[horizon_top], aDept[horizon_bottom])
-    print("HORIZONTE:", horizon)
-    print(f"TOPO-1 :: DEPT: {aDept[horizon_top-1]},Phi: {aPhi[horizon_top-1]}, Vp: {aVp[horizon_top-1]}" )
-    print(f"TOPO :: DEPT: {aDept[horizon_top]},Phi: {aPhi[horizon_top]}, Vp: {aVp[horizon_top]}" )
-    print(f"base :: DEPT: {aDept[horizon_bottom]},Phi: {aPhi[horizon_bottom]}, Vp: {aVp[horizon_bottom]}" )
+    if log_buffer is not None:
+        log_buffer.append(f"HORIZONTE: {horizon}")
+        log_buffer.append(f"TOPO-1 :: DEPT: {aDept[horizon_top-1]},Phi: {aPhi[horizon_top-1]}, Vp: {aVp[horizon_top-1]}")
+        log_buffer.append(f"TOPO :: DEPT: {aDept[horizon_top]},Phi: {aPhi[horizon_top]}, Vp: {aVp[horizon_top]}")
+        log_buffer.append(f"base :: DEPT: {aDept[horizon_bottom]},Phi: {aPhi[horizon_bottom]}, Vp: {aVp[horizon_bottom]}")
+    else:
+        print("HORIZONTE:", horizon)
+        print(f"TOPO-1 :: DEPT: {aDept[horizon_top-1]},Phi: {aPhi[horizon_top-1]}, Vp: {aVp[horizon_top-1]}" )
+        print(f"TOPO :: DEPT: {aDept[horizon_top]},Phi: {aPhi[horizon_top]}, Vp: {aVp[horizon_top]}" )
+        print(f"base :: DEPT: {aDept[horizon_bottom]},Phi: {aPhi[horizon_bottom]}, Vp: {aVp[horizon_bottom]}" )
     #print(f"base+1 :: DEPT: {aDept[horizon_bottom+1]},Phi: {aPhi[horizon_bottom+1]}, Vp: {aVp[horizon_bottom+1]}" )
 
 
@@ -164,7 +171,10 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
         if not end_found and raw_data[i,1] >= horizon[1]:
             end = i
             end_found = True
-    print(f"Data range: {start} to {end}")
+    if log_buffer is not None:
+        log_buffer.append(f"Data range: {start} to {end}")
+    else:
+        print(f"Data range: {start} to {end}")
     raw_data = raw_data[start:end,:]
 
     # Prepare data dictionary
@@ -284,7 +294,10 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
             pso.typeModel = m  # Set the model to be used
             swarm = pso.optimize(particles, len(pso.data["_Vp_"]), iterations, w, c1_start, c1_end, c2_start, c2_end, cmode, ParticleType = pspi.ParticleModel, guide=None)
             all_swarm += swarm[1] + [swarm[0]]
-            print(f"Best of swarm: {swarm[0].value}")
+            if log_buffer is not None:
+                log_buffer.append(f"Best of swarm: {swarm[0].value}")
+            else:
+                print(f"Best of swarm: {swarm[0].value}")
             if best is None or best.value > swarm[0].value:
                 best = swarm[0] 
             
@@ -319,7 +332,10 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
     wB = pgeneral["wB"]
     fitness = {ind: float("inf") for ind in range(individuals)} 
     minima = {"m": [], "ind": -1, "value": math.inf}
-    print(f"#individuals: {individuals}")
+    if log_buffer is not None:
+        log_buffer.append(f"#individuals: {individuals}")
+    else:
+        print(f"#individuals: {individuals}")
     
     for ind in range(individuals):
         # Squared error
@@ -329,11 +345,20 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
         fitness[ind] = wA*valueA + wB*valueB
         
         if len([i for i in range(len(SWARM[ind]['value'])) if math.isnan(SWARM[ind]['value'][i])]) > 0:
-            print(f"NAN-Value - ind:{ind}, i:{i}")
+            if log_buffer is not None:
+                log_buffer.append(f"NAN-Value - ind:{ind}, i:{i}")
+            else:
+                print(f"NAN-Value - ind:{ind}, i:{i}")
         if len([i for i in range(len(SWARM[ind]['x'])) if math.isnan(SWARM[ind]['x'][i])]) > 0:
-            print(f"NAN-Phi - ind:{ind}, i:{i}")
+            if log_buffer is not None:
+                log_buffer.append(f"NAN-Phi - ind:{ind}, i:{i}")
+            else:
+                print(f"NAN-Phi - ind:{ind}, i:{i}")
             
-        print(f"{ind}: {fitness[ind]} = valueA: {valueA} and valueB: {valueB}, sum(SWARM[ind]['value']): {sum(SWARM[ind]['value'])}")
+        if log_buffer is not None:
+            log_buffer.append(f"{ind}: {fitness[ind]} = valueA: {valueA} and valueB: {valueB}, sum(SWARM[ind]['value']): {sum(SWARM[ind]['value'])}")
+        else:
+            print(f"{ind}: {fitness[ind]} = valueA: {valueA} and valueB: {valueB}, sum(SWARM[ind]['value']): {sum(SWARM[ind]['value'])}")
         if minima["value"] > fitness[ind]: 
             minima["ind"] = ind
             minima["value"] = fitness[ind]
@@ -347,7 +372,10 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
     fig, ax = plt.subplots()
     plt.plot(phi, depth, color='k', linewidth=2.0, label='Expected')  # expected
     ind = minima["ind"]
-    print(f"Data length: {len(data)}")
+    if log_buffer is not None:
+        log_buffer.append(f"Data length: {len(data)}")
+    else:
+        print(f"Data length: {len(data)}")
     
     for d in range(len(data)-1):
         m = SWARM[ind]["m"][d]
@@ -384,7 +412,10 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
     
     plt.plot(phi, depth, color='k', linewidth=2.0, label='Expected')  # expected 
     ind = minima["ind"]
-    print(f"Data length: {len(data)}")
+    if log_buffer is not None:
+        log_buffer.append(f"Data length: {len(data)}")
+    else:
+        print(f"Data length: {len(data)}")
     
     for d in range(len(data)-1):
         m = SWARM[ind]["m"][d]
@@ -486,5 +517,5 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
     plt.savefig(os.path.join(output_folder, f'saida4_h{horizon[0]},{horizon[1]}.pdf'))
     plt.close(fig)
     
-    # Return the best error achieved
-    return minima["value"]
+    # Return the best error achieved and the updated log buffer
+    return minima["value"], log_buffer
