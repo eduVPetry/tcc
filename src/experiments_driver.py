@@ -3,11 +3,12 @@ from typing import List, Tuple
 
 from src.experiment import Experiment
 
-# Number of iterations to run for each experiment
-iterations: List[int] = [50, 100]
 
-# Number of particles in the swarm
-particles: List[int] = [10, 20]
+well_name: str = "RO_31A"  # Well to use for experiments
+facies: int = 7  # Facies to analyze
+
+iterations: List[int] = [50, 100]   # Number of iterations to run
+particles: List[int] = [10, 20]  # Number of particles in the swarm
 
 # Cognitive acceleration parameters (Exploration)
 c1: List[Tuple[float, float]] = [
@@ -42,7 +43,11 @@ for _iterations, _particles, (c1_start, c1_end), (c2_start, c2_end), _cmode in p
         c1_start,
         c1_end,
         c2_start,
-        c2_end
+        c2_end,
+        well_name,
+        facies
     )
-    print(experiment.id)
+    print(f"Running experiment {experiment.id}")
+    experiment.run()
+    print(f"Experiment completed in {experiment.runtime:.2f} seconds")
     print()

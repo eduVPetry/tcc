@@ -21,6 +21,8 @@ class Experiment:
         c1_end (float): Final cognitive acceleration
         c2_start (float): Initial social acceleration
         c2_end (float): Final social acceleration
+        well_name (str): Name of the well (LAS file) to use
+        facies (int): Facies number to select for analysis
         runtime (Optional[float]): Time taken to run the experiment in seconds
         id (str): Unique identifier for this experiment
     """
@@ -33,7 +35,9 @@ class Experiment:
         c1_start: float,
         c1_end: float,
         c2_start: float,
-        c2_end: float
+        c2_end: float,
+        well_name: str,
+        facies: int
     ) -> None:
         """
         Initialize a new experiment with the given parameters.
@@ -46,6 +50,8 @@ class Experiment:
             c1_end: Final cognitive acceleration
             c2_start: Initial social acceleration
             c2_end: Final social acceleration
+            well_name: Name of the well (LAS file) to use, without extension
+            facies: Facies number to select for analysis
         """
         self.iterations = iterations
         self.particles = particles
@@ -54,6 +60,8 @@ class Experiment:
         self.c1_end = c1_end
         self.c2_start = c2_start
         self.c2_end = c2_end
+        self.well_name = well_name
+        self.facies = facies
         self.runtime: Optional[float] = None
         self.generate_unique_id()
 
@@ -75,6 +83,8 @@ class Experiment:
                 raise ValueError(f"Invalid cmode: {self.cmode}")
 
         self.id = (
+            f"well={self.well_name}_"
+            f"facies={self.facies}_"
             f"cmode={cmode}_"
             f"iter={self.iterations}_"
             f"p={self.particles}_"
@@ -101,12 +111,11 @@ class Experiment:
             self.c2_start,
             self.c2_end
         )
-
-        start_time = time.perf_counter()
-
-        run_experiment(self.id)
-
-        end_time = time.perf_counter()
+        
+        start_time = time.time()
+        run_experiment(self.id, self.well_name, self.facies)
+        end_time = time.time()
+        
         self.runtime = end_time - start_time
 
     def save_results(self) -> None:

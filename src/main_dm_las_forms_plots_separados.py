@@ -10,7 +10,7 @@ import src.utils as utils
 # Set random seed for reproducibility
 np.random.seed(555)
 
-def run_experiment(experiment_id: str) -> None:
+def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
     """
     Run a rock physics inversion experiment using PSO optimization.
     
@@ -20,6 +20,8 @@ def run_experiment(experiment_id: str) -> None:
     
     Args:
         experiment_id: Identifier for the experiment, used for output file organization
+        well_name: Name of the well (LAS file) to use, without extension
+        facies: Facies number to select for analysis
     """
     # Model configuration
     model_labels = {
@@ -51,7 +53,7 @@ def run_experiment(experiment_id: str) -> None:
     horizon = (0, math.inf)
     
     # Import LAS file data
-    las = lasio.read("data/RO_31A.las")
+    las = lasio.read(f"data/{well_name}.las")
     #  print(las.curves)
     #  exit(0)
 
@@ -101,10 +103,9 @@ def run_experiment(experiment_id: str) -> None:
         pFACIES = np.delete(pFACIES, pos)
         
     # Filter by facies
-    SELECIONADA = 7
     posFacies = []
     for i in range(len(aPhi)):
-        if pFACIES[i] != SELECIONADA:
+        if pFACIES[i] != facies:
             posFacies.append(i)
             
     for i in range(len(posFacies)-1, -1, -1):
@@ -341,7 +342,7 @@ def run_experiment(experiment_id: str) -> None:
 
     # Plot results
     fig, ax = plt.subplots()
-    plt.plot(phi, depth, color='k', linewidth=2.0, label='Expected')  # expected 
+    plt.plot(phi, depth, color='k', linewidth=2.0, label='Expected')  # expected
     ind = minima["ind"]
     print(f"Data length: {len(data)}")
     
