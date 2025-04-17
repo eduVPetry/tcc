@@ -24,6 +24,7 @@ class Experiment:
         well_name (str): Name of the well (LAS file) to use
         facies (int): Facies number to select for analysis
         runtime (Optional[float]): Time taken to run the experiment in seconds
+        best_error (Optional[float]): Best error achieved by the swarm
         id (str): Unique identifier for this experiment
     """
     
@@ -63,6 +64,7 @@ class Experiment:
         self.well_name = well_name
         self.facies = facies
         self.runtime: Optional[float] = None
+        self.best_error: Optional[float] = None
         self.generate_unique_id()
 
     def generate_unique_id(self) -> None:
@@ -113,7 +115,7 @@ class Experiment:
         )
         
         start_time = time.time()
-        run_experiment(self.id, self.well_name, self.facies)
+        self.best_error = run_experiment(self.id, self.well_name, self.facies)
         end_time = time.time()
         
         self.runtime = end_time - start_time

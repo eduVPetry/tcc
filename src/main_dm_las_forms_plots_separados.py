@@ -22,6 +22,9 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
         experiment_id: Identifier for the experiment, used for output file organization
         well_name: Name of the well (LAS file) to use, without extension
         facies: Facies number to select for analysis
+        
+    Returns:
+        float: The best error achieved by the swarm across all models
     """
     # Model configuration
     model_labels = {
@@ -121,7 +124,7 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
         pRHO_AGUA80_QUARTZO = np.delete(pRHO_AGUA80_QUARTZO, pos)
         pPR_OFICIAL = np.delete(pPR_OFICIAL, pos)
         pFACIES = np.delete(pFACIES, pos)
-
+        
     # Prepare raw data and define non-null horizons
     horizon_top = 0
     horizon_bottom = None
@@ -482,3 +485,6 @@ def run_experiment(experiment_id: str, well_name: str, facies: int) -> None:
     # Save figure
     plt.savefig(os.path.join(output_folder, f'saida4_h{horizon[0]},{horizon[1]}.pdf'))
     plt.close(fig)
+    
+    # Return the best error achieved
+    return minima["value"]
