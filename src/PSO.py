@@ -56,7 +56,11 @@ class PSO:
         if guide is not None:
             xi.x = xi.x + guide
         xi.x = self.regularize(xi.x)
-        xi.update(xi.x, self.objectiveValue(xi.x))
+        # Initialize any additional attributes specific to the particle type
+        if hasattr(self, 'initParticle'):
+            self.initParticle(xi)
+        # Update particle with initial position and value
+        xi.update(xi.x, self.objectiveValue(xi))
         return xi
     
     def newSwarm(self, number_of_particles: int, size: int,
@@ -123,7 +127,8 @@ class PSO:
                 
                 # Update position
                 new_x = self.regularize(xi.v + xi.x)
-                new_value = self.objectiveValue(new_x)
+                xi.x = new_x
+                new_value = self.objectiveValue(xi)
                 xi.update(new_x, new_value)
             
             # Update global best

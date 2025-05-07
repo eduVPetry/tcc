@@ -203,5 +203,5 @@ class Experiment:
 
 
 if __name__ == "__main__":
-    experiment = Experiment("RO_31A", 7, 100, 20, 1, 2.0, 0.5, 0.5, 2.0, 123456)
+    experiment = Experiment("RO_31A", 7, 50, 20, 1, 2.0, 0.5, 0.5, 2.0, 123456)
     experiment.run()

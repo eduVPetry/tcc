@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-from typing import List, Tuple, Optional, callable
+from typing import Optional, Callable
 
 import src.PSORPInversion_Phi_v2_eval as pspi
 import src.utils as utils
@@ -13,7 +13,7 @@ def run_experiment(
     experiment_id: str, 
     well_name: str, 
     facies: int, 
-    log_callback: Optional[callable] = None, 
+    log_callback: Optional[Callable] = None, 
     seed: Optional[int] = None
 ) -> float:
     """
@@ -440,7 +440,7 @@ def run_experiment(
                 plt.plot([SWARM[ind]["VP"][d], SWARM[ind]["VP"][d+1]], [pso.data["_Depth_"][d], pso.data["_Depth_"][d+1]], color=model_colors[model_labels[m]], linewidth=2.0, label=model_labels[m])       
     
     ind = minima["ind"]
-    plt.plot(data, depth, color='k', linewidth=2.0, label='Expected')   
+    plt.plot(data, depth, color='k', linewidth=2.0, label='Expected')
     for d in range(len(data)-1):
         m = SWARM[ind]["m"][d]
         plt.plot([SWARM[ind]["VP"][d], SWARM[ind]["VP"][d+1]], [depth[d], depth[d+1]], color='b', linewidth=2.0, label='Swarm-best', linestyle='dashed')  # best
@@ -491,7 +491,7 @@ def run_experiment(
 
     # Plot porosity vs VP
     fig, ax = plt.subplots()
-    plt.scatter(phi, data, c='k')  # expected 
+    plt.scatter(phi, data, c='k')  # expected
     ind = minima["ind"]
     for d in range(len(data)-1):
         m = SWARM[ind]["m"][d]

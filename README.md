@@ -35,15 +35,21 @@ O projeto utiliza três arquivos de configuração na pasta `config/`:
 
 ## 📊 Uso
 
-Para executar os experimentos:
+Para executar um único experimento (teste):
 
 ```bash
-python src/experiments_driver.py
+python3 -m src.run_single_experiment
 ```
 
-O script irá:
+Para executar todos os experimentos:
+
+```bash
+python3 -m src.experiments_driver
+```
+
+O driver de experimentos irá:
 1. Gerar combinações de parâmetros do PSO (iterações, número de partículas, coeficientes cognitivo e social, modo de atualização dos coeficientes)
-2. Para cada combinação:
+2. Para cada combinação, dado uma quantidade de repetições:
    - Criar um experimento com os parâmetros específicos
    - Executar a calibração para cada modelo de física de rochas
    - Salvar os resultados e métricas de desempenho
@@ -66,6 +72,7 @@ O script irá:
 │   ├── experiment_utils.py
 │   ├── experiments_driver.py
 │   ├── main_dm_las_forms_plots_separados.py
+│   ├── run_single_experiment.py
 │   └── utils.py
 └── requirements.txt       # Dependências do projeto
 ```
@@ -73,7 +80,8 @@ O script irá:
 ## 📈 Resultados
 
 Os resultados são salvos na pasta `results/` e incluem:
-- Gráficos de comparação entre dados observados e sintéticos
+- CSV contendo os parâmetros de cada experimento e o melhor erro obtido 
+- Gráficos de comparação entre dados reais e resultados experimentais
 - Valores de porosidade estimados
 - Métricas de qualidade do ajuste
 

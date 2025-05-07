@@ -2,7 +2,7 @@ import copy
 import math
 import numpy as np
 import re
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict, List, Tuple, Any, Optional, Union
 
 import src.PSO as PSO
 
@@ -30,7 +30,8 @@ class ParticleModel(PSO.Particle):
         # 5. Spherical inclusion model
         # 6. Berryman inclusion model
         self.model = ""
-    
+        self.OV = None
+
     def getModelLabel(self) -> str:
         """
         Get the label for the current model.
@@ -106,25 +107,29 @@ class PSORPInversion_Phi(PSO.PSO):
         xi.model = self.typeModel
         return xi
     
-    def objectiveValue(self, xi: ParticleModel) -> float:
+    def objectiveValue(self, xi: Union[ParticleModel, np.ndarray]) -> float:
         """
-        Calculate the fitness of a particle.
+        Calculate the fitness of a particle or position vector.
         
         Args:
-            xi: The particle to evaluate
+            xi: The particle or position vector to evaluate
             
         Returns:
             The objective value (squared error)
         """
-        # Calculate by model
-        OV = None
-        if xi.model == "":
-            OV = 0
+        # If xi is a numpy array, treat it as a position vector
+        if isinstance(xi, np.ndarray):
+            OV = self.model(self.typeModel, self.interest, xi[0])
         else:
-            OV = self.model(xi.model, self.interest, xi.x[0])
-        
-        # Store the VP obtained by particle xi
-        xi.OV = OV
+            # Calculate by model
+            OV = None
+            if not hasattr(xi, 'model') or xi.model == "":
+                OV = 0
+            else:
+                OV = self.model(xi.model, self.interest, xi.x[0])
+            
+            # Store the VP obtained by particle xi
+            xi.OV = OV
                 
         # Calculate squared error
         value = np.sum((self.data[self.confidence] - OV)**2)
@@ -177,7 +182,7 @@ class PSORPInversion_Phi(PSO.PSO):
                 # print(f'variables[{var}]=', command)
                 # print(command)
                 variables[var] = eval(command)
-                if var == self.confidence: 
+                if var == self.confidence:
                     return variables[var]
             # print('\nvariables', variables)
             #
