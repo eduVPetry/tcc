@@ -41,7 +41,7 @@ c2: List[Tuple[float, float]] = [
 cmode: List[int] = [0, 1, 2]
 
 # Number of repetitions for each parameter combination
-num_repetitions: int = 5
+num_repetitions: int = 1
 
 # Create results directory if it doesn't exist
 os.makedirs("results", exist_ok=True)

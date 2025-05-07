@@ -1,3 +1,5 @@
-numpy
+lasio
 matplotlib
-lasio 
+numpy
+pandas
+
