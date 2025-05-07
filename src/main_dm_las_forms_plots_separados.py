@@ -384,7 +384,7 @@ def run_experiment(
     plt.title(title)
     
     # Labels and grid
-    plt.xlabel('Porosity($\phi$)')
+    plt.xlabel(r'Porosity($\phi$)')
     plt.ylabel('Depth')
     plt.grid()
     plt.xlim([0, 0.6])
@@ -421,7 +421,7 @@ def run_experiment(
     plt.title(title)
     
     # Labels and grid
-    plt.xlabel('Porosity($\phi$)')
+    plt.xlabel(r'Porosity($\phi$)')
     plt.ylabel('Depth')
     plt.grid()
     plt.xlim([0, 0.6])
@@ -497,7 +497,7 @@ def run_experiment(
         m = SWARM[ind]["m"][d]
         plt.scatter([SWARM[ind]["x"][d], SWARM[ind]["x"][d+1]], [SWARM[ind]["VP"][d], SWARM[ind]["VP"][d+1]], c='b')  # best
 
-    plt.xlabel('Porosity($\phi$)')
+    plt.xlabel(r'Porosity($\phi$)')
     plt.ylabel('$V_P$')
     plt.grid()
 
