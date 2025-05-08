@@ -1,4 +1,5 @@
 from datetime import datetime
+import fcntl
 import numpy as np
 import os
 import time
@@ -131,6 +132,7 @@ class Experiment:
         """Append this experiment's results to the results.csv file."""
         csv_path = os.path.join("results", "results.csv")
         with open(csv_path, 'a', newline='') as f:
+            fcntl.flock(f, fcntl.LOCK_EX)
             writer = csv.writer(f)
             writer.writerow([
                 self.well_name,
@@ -146,7 +148,7 @@ class Experiment:
                 self.runtime,
                 self.seed
             ])
-
+            fcntl.flock(f, fcntl.LOCK_UN)
     def run(self) -> None:
         """
         Execute the experiment.
