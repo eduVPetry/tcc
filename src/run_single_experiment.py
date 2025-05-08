@@ -1,4 +1,4 @@
-from src.experiments_driver import run_experiment
+from src.sequential_experiments_driver import run_experiment
 
 
 def main():

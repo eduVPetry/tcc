@@ -149,6 +149,7 @@ class Experiment:
                 self.seed
             ])
             fcntl.flock(f, fcntl.LOCK_UN)
+
     def run(self) -> None:
         """
         Execute the experiment.
