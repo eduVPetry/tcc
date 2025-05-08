@@ -67,7 +67,7 @@ def run_experiment(
     # Read parameter files
     pgeneral, pmethod, prpms = utils.readParamInputs(
         "param_general.txt",
-        "param_pso.txt",
+        f"param_pso_{experiment_id}.txt",
         "param_rpms.txt"
     )
 

@@ -1,4 +1,4 @@
-from src.sequential_experiments_driver import run_experiment
+from src.experiments_driver_sequential import run_experiment
 
 
 def main():
@@ -31,4 +31,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

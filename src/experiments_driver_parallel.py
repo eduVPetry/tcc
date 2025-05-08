@@ -3,13 +3,15 @@ from multiprocessing import Pool
 import numpy as np
 import os
 import pandas as pd
-from typing import List, Tuple, Dict, Any, Union
+import time
+from tqdm import tqdm
 import traceback
+from typing import List, Tuple, Dict, Any
 
 from src.experiment import Experiment
 
 
-workers: int = 6  # Number of parallel workers
+workers: int = 12  # Number of parallel workers
 
 well_name: str = "RO_31A"  # Well to use for experiments
 facies: int = 7  # Which facies to be analyze
@@ -44,7 +46,7 @@ c2: List[Tuple[float, float]] = [
 cmode: List[int] = [0, 1, 2]
 
 # Number of repetitions for each parameter combination
-num_repetitions: int = 4
+num_repetitions: int = 1
 
 # Create results directory if it doesn't exist
 os.makedirs("results", exist_ok=True)
@@ -66,6 +68,10 @@ def run_experiment(
     total_reps: int
 ) -> None:
     """Run an experiment with the given parameters."""
+
+    # Ensure unique random seed per process using time and PID to avoid identical seeds in multiprocessing
+    np.random.seed(int(time.time() * 1000000) % 2**32 + os.getpid())
+
     print(f"\n{progress}: Running experiment with {'fixed' if cmode == 0 else 'varying'} parameters:")
     print(f"  - Iterations: {iterations}")
     print(f"  - Particles: {particles}")
@@ -92,10 +98,10 @@ def run_experiment(
             seed=np.random.randint(0, 1000000)
         )
         experiment.run()
-        print(f"  ✓ Experiment completed successfully")
+        print(f"\n✓ {progress} completed successfully")
     except Exception as e:
-        error_msg = f"Error in experiment: {str(e)}"
-        print(f"  ✗ {error_msg}")
+        error_msg = f"Error in {progress}: {str(e)}"
+        print(f"\n✗ {error_msg}")
         traceback.print_exc()
         
         # Record failed experiment
@@ -189,7 +195,7 @@ def build_param_list() -> List[Tuple[str, int, int, int, float, float, float, fl
     for _iterations, _particles, fixed_c1, fixed_c2 in product(iterations, particles, fixed_c1_values, fixed_c2_values):
         for rep in range(num_repetitions):
             experiment_counter += 1
-            progress = f"exp_{experiment_counter}/{total_experiments}"
+            progress = f"exp_{experiment_counter}"
             param_list.append((
                 progress, _iterations, _particles, 0,  # cmode = 0
                 fixed_c1, fixed_c1,
@@ -201,7 +207,7 @@ def build_param_list() -> List[Tuple[str, int, int, int, float, float, float, fl
     for _iterations, _particles, (c1_start, c1_end), (c2_start, c2_end), _cmode in product(iterations, particles, c1, c2, [1, 2]):
         for rep in range(num_repetitions):
             experiment_counter += 1
-            progress = f"exp_{experiment_counter}/{total_experiments}"
+            progress = f"exp_{experiment_counter}"
             param_list.append((
                 progress, _iterations, _particles, _cmode,
                 c1_start, c1_end,
@@ -211,6 +217,9 @@ def build_param_list() -> List[Tuple[str, int, int, int, float, float, float, fl
 
     return param_list
 
+def run_experiment_wrapper(args):
+    return run_experiment(*args)
+
 
 def main():
     print("Preparing experiment configurations...")
@@ -218,7 +227,13 @@ def main():
     print(f"Launching {len(param_list)} experiments using {workers} parallel workers...")
 
     with Pool(processes=workers) as pool:
-        pool.starmap(run_experiment, param_list)
+        for _ in tqdm(
+            pool.imap_unordered(run_experiment_wrapper, param_list),
+            total=len(param_list),
+            bar_format='\n{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}]'
+        ):
+            pass
+        # pool.starmap(run_experiment, param_list)
 
     print_results_summary()
 

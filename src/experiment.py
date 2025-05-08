@@ -169,7 +169,8 @@ class Experiment:
                 self.c1_start,
                 self.c1_end,
                 self.c2_start,
-                self.c2_end
+                self.c2_end,
+                experiment_id=self.id
             )
 
             # Log start of experiment

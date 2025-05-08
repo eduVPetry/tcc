@@ -8,21 +8,15 @@ def write_param_pso(
     c1_start: float,
     c1_end: float,
     c2_start: float,
-    c2_end: float
+    c2_end: float,
+    experiment_id: str
 ) -> None:
     """
-    Write PSO parameters to a configuration file.
-    
-    Args:
-        particles: Number of particles in the swarm
-        iterations: Number of iterations to run
-        cmode: Coefficient update mode (0=fixed, 1=linear, 2=exponential)
-        c1_start: Initial cognitive acceleration
-        c1_end: Final cognitive acceleration
-        c2_start: Initial social acceleration
-        c2_end: Final social acceleration
+    Write PSO parameters to a unique configuration file.
     """
-    filename = os.path.join("config", "param_pso.txt")
+    os.makedirs("config", exist_ok=True)
+    filename = os.path.join("config", f"param_pso_{experiment_id}.txt")
+
     config_str = (
         f"particles = {particles}\n"
         f"iterations = {iterations}\n"
@@ -35,5 +29,6 @@ def write_param_pso(
         f"c2_start = {c2_start}\n"
         f"c2_end = {c2_end}\n"
     )
+
     with open(filename, "w") as f:
         f.write(config_str)
