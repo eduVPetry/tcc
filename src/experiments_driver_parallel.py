@@ -11,7 +11,7 @@ from typing import List, Tuple, Dict, Any
 from src.experiment import Experiment
 
 
-workers: int = max(1, os.cpu_count() - 1)  # Number of parallel workers
+workers: int = 10 # max(1, os.cpu_count() - 1)  # Number of parallel workers
 
 well_name: str = "RO_31A"  # Well to use for experiments
 facies: int = 7  # Which facies to be analyze
@@ -46,7 +46,7 @@ c2: List[Tuple[float, float]] = [
 cmode: List[int] = [0, 1, 2]
 
 # Number of repetitions for each parameter combination
-num_repetitions: int = 1
+num_repetitions: int = 5
 
 # Create results directory if it doesn't exist
 os.makedirs("results", exist_ok=True)
