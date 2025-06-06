@@ -178,20 +178,10 @@ class PSORPInversion_Phi(PSO.PSO):
                         newV = f"self.fixed['{v}']"
                     if newV is not None:
                         command = command.replace(v, newV)
-                # print(variables)
-                # print(f'variables[{var}]=', command)
-                # print(command)
+
                 variables[var] = eval(command)
                 if var == self.confidence:
                     return variables[var]
-            # print('\nvariables', variables)
-            #
-            # print('\nself.fixed', self.fixed)
-            # print('\nself.data', self.data)
-            # print('\n')
-            #
-            # print(variables["_return_"])
-            ret = None
         except Exception as error:
             print(f"The following error was presented when trying to execute model {name}:")
             print("\t", error)

@@ -9,7 +9,7 @@ from src.experiment import Experiment
 
 
 well_name: str = "RO_31A"  # Well to use for experiments
-facies: int = 7  # Which facies to be analyze
+facies: int = 7  # Which facies to be analyzed
 
 iterations: List[int] = [50, 100]   # Number of iterations to run
 particles: List[int] = [10, 20]  # Number of particles in the swarm

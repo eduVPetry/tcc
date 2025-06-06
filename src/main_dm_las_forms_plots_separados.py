@@ -164,11 +164,6 @@ def run_experiment(
     log(f"TOPO :: DEPT: {aDept[horizon_top]},Phi: {aPhi[horizon_top]}, Vp: {aVp[horizon_top]}")
     log(f"base :: DEPT: {aDept[horizon_bottom]},Phi: {aPhi[horizon_bottom]}, Vp: {aVp[horizon_bottom]}")
 
-    #importando do Stanford do Grana
-    #datafile= "data/data1_softsand.dat"
-    #datafile= "data/data4.dat"
-    #brute = np.loadtxt(datafile)
-
     # Slice data considering the depth horizon
     start = 0
     start_found = False
@@ -206,44 +201,6 @@ def run_experiment(
         "_pressure_": np.nanmean(pPR_OFICIAL),
         "_Ar_": 0.2  # for elliptical inclusion model
     }
-
-    #GRANA - STANFORD: importing data 1
-    #data["Depth"]  = brute[:,0].reshape(-1, 1)
-    #data["Depth"]  = data["Depth"].reshape(len(data["Depth"]))
-    #data["Phi"]    = brute[:,1].reshape(-1, 1)
-    #data["Vp"]     = brute[:,2].reshape(-1, 1)
-    #data["Vp"]     = data["Vp"].reshape(len(data["Vp"]))
-
-    #GRANA - STANFORD: importing data 4
-    #data["Clay"]   = brute[:,0].reshape(-1, 1)
-    #data["Depth"]  = brute[:,1].reshape(-1, 1)
-    #data["Depth"]  = data["Depth"].reshape(len(data["Depth"]))
-    #data["Facies"] = brute[:,2].reshape(-1, 1)
-    #data["Phi"]    = brute[:,3].reshape(-1, 1)
-    #data["Rho"]    = brute[:,4].reshape(-1, 1)
-    #data["Rhorpm"] = brute[:,5].reshape(-1, 1)
-    #data["Sw"]     = brute[:,6].reshape(-1, 1)
-    #data["Vp"]     = brute[:,7].reshape(-1, 1)
-    #data["Vp"]     = data["Vp"].reshape(len(data["Vp"]))
-    #data["Vprpm"]  = brute[:,8].reshape(-1, 1)
-    #data["Vs"]     = brute[:,9].reshape(-1, 1)
-    #data["Vsrpm"]  = brute[:,10].reshape(-1, 1)
-    #data["Facies"] = data["Facies"]-1
-    #data["Facies"] = data["Facies"].astype(int)
-          
-    #Set fixed parameters
-    #fixed = dict()
-    #fixed["Kmat"]=36
-    #fixed["Gmat"]=45
-    #fixed["RHOmat"] = 2.65
-    #fixed["Kfl"]=2.25
-    #fixed["Gfl"]=0
-    #fixed["RHOfl"] = 1
-    #fixed["coordnum"] = 7
-    #fixed["criticalPhi"] = 0.4
-    #fixed["pressure"] = 0.02
-    #fixed["Ar"] = 0.2  # for elliptical inclusion model
-
 
     pso = pspi.PSORPInversion_Phi(data, fixed, 0, prpms, pgeneral["interest"], pgeneral["confidence"])#, horizon)
 
