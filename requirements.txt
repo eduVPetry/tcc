@@ -2,4 +2,4 @@ lasio
 matplotlib
 numpy
 pandas
-
+seaborn
