@@ -165,6 +165,11 @@ cython_debug/
 data/*.las
 data/**/*.las
 
-# Ignore all results directories except results.csv
+# Ignore some results directories except specific files and folders
 results/*
 !results/results.csv
+!results/results_grouped.csv
+!results/top10_grouped.csv
+!results/*.png
+!results/best_experiment/
+!results/best_experiment/**
