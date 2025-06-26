@@ -173,3 +173,6 @@ results/*
 !results/*.png
 !results/best_experiment/
 !results/best_experiment/**
+
+# Ignore param_pso configuration files
+config/param_pso*
